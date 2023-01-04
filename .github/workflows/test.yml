@@ -20,7 +20,7 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
 
-    - name: display date ${{ github.event.base.repo.updated_at }}
+    - name: save date
       run: |
         python -m pip install --upgrade pip setuptools
         pip install tox tox-gh-actions
@@ -28,7 +28,14 @@ jobs:
         echo "datelimit=$datethen" >> $GITHUB_ENV
         echo $datethen
 
-    - name: ${{ env.datelimit }}
+      - name: display
+        env:
+          COMMIT_DATE: ${{ github.event.base.repo.updated_at }}
+        run: |
+          echo ${COMMIT_DATE}
+          echo ${datelimit}
+
+    - name: run tox
       if: github.event.base.repo.updated_at <= env.datelimit
       run: tox
 
