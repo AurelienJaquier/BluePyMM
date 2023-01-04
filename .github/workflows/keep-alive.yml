@@ -20,13 +20,22 @@ jobs:
 
       - name: Get date from 50 days ago
           # datethen=`date -d "-50 days" --utc +%FT%TZ`
+        env:
+          COMMIT_DATE: ${{ github.event.base.repo.updated_at }}
         run: |
           datethen=`date -d "-20 minutes" --utc +%FT%TZ`
           echo "datelimit=$datethen" >> $GITHUB_ENV
           echo $datethen
+          echo ${COMMIT_DATE}
 
-      # - name: setup git config
-      - name: display date ${{ github.event.base.repo.updated_at }}
+      - name: Dump github context
+        shell: bash
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: |
+          echo "$GITHUB_CONTEXT"
+
+      - name: setup git config
         if: github.event.base.repo.updated_at <= env.datelimit
         run: |
           # setup the username and email.
