@@ -4,10 +4,11 @@ on:
   schedule:
     # Runs every sunday at 3 a.m.
     - cron: '0 3 * * SUN'
+  pull_request:
 
 jobs:
-  call-test-workflow:
-    uses: BlueBrain/BluePyMM/.github/workflows/test.yml@master
+  # call-test-workflow:
+  #   uses: BlueBrain/BluePyMM/.github/workflows/test.yml@master
   
   keep-workflow-alive:
     name: Keep workflow alive
@@ -21,8 +22,10 @@ jobs:
         run: |
           datethen=`date -d "-50 days" --utc +%FT%TZ`
           echo "datelimit=$datethen" >> $GITHUB_ENV
+          echo $datethen
 
-      - name: setup git config
+      # - name: setup git config
+      - name: display date ${{ github.event.base.repo.updated_at }}
         if: github.event.base.repo.updated_at <= env.datelimit
         run: |
           # setup the username and email.
