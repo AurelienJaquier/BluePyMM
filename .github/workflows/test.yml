@@ -28,12 +28,12 @@ jobs:
         echo "datelimit=$datethen" >> $GITHUB_ENV
         echo $datethen
 
-      - name: display
-        env:
-          COMMIT_DATE: ${{ github.event.base.repo.updated_at }}
-        run: |
-          echo ${COMMIT_DATE}
-          echo ${datelimit}
+    - name: display
+      env:
+        COMMIT_DATE: ${{ github.event.base.repo.updated_at }}
+      run: |
+        echo ${COMMIT_DATE}
+        echo ${datelimit}
 
     - name: run tox
       if: github.event.base.repo.updated_at <= env.datelimit
