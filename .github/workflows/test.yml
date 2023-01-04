@@ -20,12 +20,30 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
 
-    - name: Install dependencies
+    - name: save date
       run: |
         python -m pip install --upgrade pip setuptools
         pip install tox tox-gh-actions
+        datethen=`date -d "-20 minutes" --utc +%FT%TZ`
+        echo "datelimit=$datethen" >> $GITHUB_ENV
+        echo $datethen
 
-    - name: Run tox
+    - name: display
+      env:
+        COMMIT_DATE: ${{ github.event.base.repo.updated_at }}
+      run: |
+        echo ${COMMIT_DATE}
+        echo ${datelimit}
+
+    - name: Dump github context
+      shell: bash
+      env:
+        GITHUB_CONTEXT: ${{ toJson(github) }}
+      run: |
+        echo "$GITHUB_CONTEXT"
+  
+    - name: run tox
+      if: github.event.base.repo.updated_at <= env.datelimit
       run: tox
 
     - name: "Upload coverage to Codecov"
