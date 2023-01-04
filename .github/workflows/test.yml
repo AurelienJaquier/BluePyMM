@@ -35,6 +35,12 @@ jobs:
         echo ${COMMIT_DATE}
         echo ${datelimit}
 
+    - name: Dump github context
+      run:   echo "$GITHUB_CONTEXT"
+      shell: bash
+      env:
+      GITHUB_CONTEXT: ${{ toJson(github) }}
+  
     - name: run tox
       if: github.event.base.repo.updated_at <= env.datelimit
       run: tox
